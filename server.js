@@ -1,39 +1,33 @@
-// server.js
-require('dotenv').config(); // Carrega as variáveis do arquivo .env
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
+
+// Se o server.js estiver na RAIZ do projeto:
 const db = require('./backend/config/database');
 const usuarioRoutes = require('./backend/routes/usuarioRoutes');
-const agendamentoRoutes = require('./backend/routes/agendamentoRoutes'); // Adicione esta linha
-const path = require('path'); // Adicione esta linha para lidar com caminhos de pastas
-
-
+const agendamentoRoutes = require('./backend/routes/agendamentoRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
-app.use(cors()); // Libera o acesso do Front-end
-app.use(express.json()); // Ensina o Express a entender requisições no formato JSON
+app.use(cors()); // Libera o acesso para a sua URL do GitHub Pages
+app.use(express.json());
 
-// A LINHA MÁGICA DA OPÇÃO 2:
-// Isto diz ao Node.js: "Qualquer ficheiro HTML, CSS ou JS que estiver na pasta 'frontend', entregue ao utilizador"
+// Serve arquivos estáticos da pasta frontend (opcional se já usar GitHub Pages)
 app.use(express.static(path.join(__dirname, 'frontend')));
 
-
-// Rota de teste simples
+// Rota de teste para validar se o backend está no ar na Render
 app.get('/api/status', (req, res) => {
     res.json({ mensagem: "Servidor Connect Senac rodando com sucesso!", status: "OK" });
 });
 
-
-// Usando as rotas na API
-// Todas as rotas de usuário terão o prefixo /api/usuarios
+// Rotas da API
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/agendamentos', agendamentoRoutes); 
 
-// Iniciando o servidor
+// Inicia o servidor escutando a porta dinâmica da Render
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
-    console.log(`Acesse: http://localhost:${PORT}/api/status`);
 });
