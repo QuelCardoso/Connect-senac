@@ -1,9 +1,8 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
-// Se o server.js estiver na RAIZ do projeto:
+// Módulos do backend
 const db = require('./backend/config/database');
 const usuarioRoutes = require('./backend/routes/usuarioRoutes');
 const agendamentoRoutes = require('./backend/routes/agendamentoRoutes');
@@ -12,22 +11,22 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
-app.use(cors()); // Libera o acesso para a sua URL do GitHub Pages
-app.use(express.json());
+app.use(cors()); // Libera requisições externas (como o GitHub Pages)
+app.use(express.json()); // Entende dados em formato JSON
 
-// Serve arquivos estáticos da pasta frontend (opcional se já usar GitHub Pages)
-app.use(express.static(path.join(__dirname, 'frontend')));
+// Serve arquivos estáticos da raiz do projeto
+app.use(express.static(__dirname));
 
-// Rota de teste para validar se o backend está no ar na Render
+// Rota de teste
 app.get('/api/status', (req, res) => {
     res.json({ mensagem: "Servidor Connect Senac rodando com sucesso!", status: "OK" });
 });
 
 // Rotas da API
 app.use('/api/usuarios', usuarioRoutes);
-app.use('/api/agendamentos', agendamentoRoutes); 
+app.use('/api/agendamentos', agendamentoRoutes);
 
-// Inicia o servidor escutando a porta dinâmica da Render
+// Inicia o servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
